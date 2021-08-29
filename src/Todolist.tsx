@@ -6,7 +6,6 @@ type TaskType = {
     title: string
     isDone: boolean
 }
-
 type PropsType = {
     title: string
     tasks: Array<TaskType>
@@ -14,6 +13,7 @@ type PropsType = {
     changeFilter: (value: filterValuesType) => void
     addNewTask: (taskTitle: string) => void
     changeBoxStatus: (id: string, isDone: boolean) => void
+    // error: string | null
 }
 
 export function Todolist(props: PropsType) {
@@ -24,13 +24,21 @@ export function Todolist(props: PropsType) {
         setNewTaskTitle(e.currentTarget.value)
     }
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        setError(null)
         if (e.charCode === 13) {
             addTask()
         }
     }
+
+    // Function that checks Input and add Error message
+    let [error, setError] = useState<string | null>(null)
     let addTask = () => {
-        props.addNewTask(newTaskTitle)
-        setNewTaskTitle('')
+        if (newTaskTitle.trim() !== '') {
+            props.addNewTask(newTaskTitle)
+            setNewTaskTitle('')
+        } else {
+            setError('Title is required!')
+        }
     }
 
     // Filter Buttons ('All' | 'Active' | 'Completed')
@@ -48,6 +56,7 @@ export function Todolist(props: PropsType) {
                        onKeyPress={onKeyPressHandler}
                 />
                 <button onClick={addTask}>+</button>
+                {error && <div className='error-message'>{error}</div>}
             </div>
             <ul>
                 {

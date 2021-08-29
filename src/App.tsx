@@ -33,10 +33,17 @@ const App = () => {
     //------------------------------------------------------------
 
     // Function to Add tasks -------------------------------------
+
     const addNewTask = (taskTitle: string) => {
-        let task = {id: v1(), title: taskTitle, isDone: false};
+        let task = {id: v1(), title: taskTitle.trim(), isDone: false};
         let newTask = [task, ...tasks]
         setTasks(newTask)
+        /*if (taskTitle !== '') {
+            setTasks(newTask)
+        } else {
+            setError('Title is required!')
+        }*/
+
     }
     //------------------------------------------------------------
 
@@ -47,7 +54,6 @@ const App = () => {
              task.isDone = isDone
              setTasks([...tasks])
          }
-        setTasks([...tasks])
     }
     //------------------------------------------------------------
 
@@ -60,6 +66,7 @@ const App = () => {
                 changeFilter={changeFilter}
                 addNewTask={addNewTask}
                 changeBoxStatus={changeBoxStatus}
+                // error={error}
             />
         </div>
     );
