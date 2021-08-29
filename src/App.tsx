@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import { Todolist } from './Todolist';
+import {Todolist} from './Todolist';
 import {v1} from "uuid";
 
 
@@ -33,27 +33,20 @@ const App = () => {
     //------------------------------------------------------------
 
     // Function to Add tasks -------------------------------------
-
     const addNewTask = (taskTitle: string) => {
         let task = {id: v1(), title: taskTitle.trim(), isDone: false};
         let newTask = [task, ...tasks]
         setTasks(newTask)
-        /*if (taskTitle !== '') {
-            setTasks(newTask)
-        } else {
-            setError('Title is required!')
-        }*/
-
     }
     //------------------------------------------------------------
 
     // Change box status (true/false) ----------------------------
     const changeBoxStatus = (id: string, isDone: boolean) => {
         let task = tasks.find(t => t.id === id)
-         if (task) {
-             task.isDone = isDone
-             setTasks([...tasks])
-         }
+        if (task) {
+            task.isDone = isDone
+            setTasks([...tasks])
+        }
     }
     //------------------------------------------------------------
 
@@ -66,7 +59,7 @@ const App = () => {
                 changeFilter={changeFilter}
                 addNewTask={addNewTask}
                 changeBoxStatus={changeBoxStatus}
-                // error={error}
+                filter={filter}
             />
         </div>
     );
