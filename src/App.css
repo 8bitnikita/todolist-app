@@ -7,6 +7,10 @@
   margin-right: 50px;
 }
 
+h3 {
+  display: inline-block;
+}
+
 .error {
   border: 1px solid red;
 }
@@ -18,5 +22,10 @@
 .active-filter {
   background-color: aquamarine;
 }
+
+.is-done {
+  opacity: 0.5;
+}
+
 
 
