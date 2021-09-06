@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from "uuid";
-
+import {AddInputForm} from "./AddInputForm";
 
 export type filterValuesType = 'All' | 'Active' | 'Completed'
 type TodolistType = {
@@ -15,36 +15,33 @@ type TasksStateType = {
 }
 
 const App = () => {
-
     let todolistId1 = v1();
     let todolistId2 = v1();
 
-    // useState to delete tasks ----------------------------------
+    // useState to delete tasks
     const removeTask = (id: string, todolistId: string) => {
         let todolistTasks = tasks[todolistId]
         tasks[todolistId] = todolistTasks.filter(task => task.id !== id)
         setTasks({...tasks})
     }
-    //------------------------------------------------------------
 
-    // Function to remove Todolist -------------------------------------
+    // Function to remove Todolist
     const removeTodolist = (id: string) => {
         setTodolists(todolists.filter(tl => tl.id !== id))
         delete tasks[id]
         setTasks({...tasks})
     }
-    //------------------------------------------------------------
 
-    // Function to Add tasks -------------------------------------
+    // Function to Add tasks
     const addNewTask = (taskTitle: string, todolistId: string) => {
         let task = {id: v1(), title: taskTitle.trim(), isDone: false};
         let todolistTasks = tasks[todolistId]
         tasks[todolistId] = [task, ...todolistTasks]
         setTasks({...tasks})
     }
-    //------------------------------------------------------------
 
-    // Change checkbox status (true/false) ----------------------------
+
+    // Change checkbox status (true/false)
     const changeBoxStatus = (id: string, isDone: boolean, todolistId: string) => {
         let todolistTasks = tasks[todolistId]
         let task = todolistTasks.find(t => t.id === id)
@@ -53,7 +50,6 @@ const App = () => {
             setTasks({...tasks})
         }
     }
-    //------------------------------------------------------------
 
     // Function to filter buttons ('All' | 'Active' | 'Completed')
     const changeFilter = (value: filterValuesType, todolistId: string) => {
@@ -63,9 +59,8 @@ const App = () => {
             setTodolists([...todolists])
         }
     }
-    //------------------------------------------------------------
 
-    // useState to add Todolists ---------------------------------
+    // useState to add Todolists
     let [todolists, setTodolists] = useState<Array<TodolistType>>([
         {
             id: todolistId1,
@@ -78,7 +73,6 @@ const App = () => {
             filter: 'All'
         }
     ])
-    //------------------------------------------------------------
 
     let [tasks, setTasks] = useState<TasksStateType>({
         [todolistId1]: [
@@ -93,8 +87,17 @@ const App = () => {
         ]
     })
 
+    // Function to add new Todolist
+    const addTodolist = (title: string) => {
+        let newTodolistId = v1();
+        let newTodolist: TodolistType = {id: newTodolistId, title: title, filter: 'All'}
+        setTodolists([newTodolist, ...todolists])
+        setTasks({...tasks, [newTodolistId]: []})
+    }
+
     return (
         <div className="App">
+            <AddInputForm addItem={addTodolist}/>
             {
                 todolists.map(tl => {
                     let allTodolistTasks = tasks[tl.id];

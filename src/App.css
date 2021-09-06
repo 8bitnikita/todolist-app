@@ -7,10 +7,6 @@
   margin-right: 50px;
 }
 
-h3 {
-  display: inline-block;
-}
-
 .error {
   border: 1px solid red;
 }
