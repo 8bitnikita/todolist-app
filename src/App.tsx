@@ -3,6 +3,8 @@ import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from "uuid";
 import {AddInputForm} from "./AddInputForm";
+import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
+import {Menu} from "@material-ui/icons";
 
 export type filterValuesType = 'All' | 'Active' | 'Completed'
 type TodolistType = {
@@ -97,34 +99,56 @@ const App = () => {
 
     return (
         <div className="App">
-            <AddInputForm addItem={addTodolist}/>
-            {
-                todolists.map(tl => {
-                    let allTodolistTasks = tasks[tl.id];
-                    let tasksForTodolist = allTodolistTasks
-                    if (tl.filter === 'Active') {
-                        tasksForTodolist = allTodolistTasks.filter(task => !task.isDone)
-                    }
-                    if (tl.filter === 'Completed') {
-                        tasksForTodolist = allTodolistTasks.filter(task => task.isDone)
-                    }
 
-                    return (
-                        <Todolist
-                            key={tl.id}
-                            id={tl.id}
-                            title={tl.title}
-                            filter={tl.filter}
-                            tasks={tasksForTodolist}
-                            removeTask={removeTask}
-                            changeFilter={changeFilter}
-                            addNewTask={addNewTask}
-                            changeBoxStatus={changeBoxStatus}
-                            removeTodolist={removeTodolist}
-                        />
-                    )
-                })
-            }
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6">
+                        News
+                    </Typography>
+                    <Button color="inherit">Login</Button>
+                </Toolbar>
+            </AppBar>
+            <Container fixed>
+                <Grid container style={{padding: "20px"}}>
+                    <AddInputForm addItem={addTodolist}/>
+                </Grid>
+                <Grid container spacing={3}>
+                    {
+                        todolists.map(tl => {
+                            let allTodolistTasks = tasks[tl.id];
+                            let tasksForTodolist = allTodolistTasks
+                            if (tl.filter === 'Active') {
+                                tasksForTodolist = allTodolistTasks.filter(task => !task.isDone)
+                            }
+                            if (tl.filter === 'Completed') {
+                                tasksForTodolist = allTodolistTasks.filter(task => task.isDone)
+                            }
+
+                            return (
+                                <Grid item>
+                                    <Paper style={{padding: "10px"}}>
+                                        <Todolist
+                                            key={tl.id}
+                                            id={tl.id}
+                                            title={tl.title}
+                                            filter={tl.filter}
+                                            tasks={tasksForTodolist}
+                                            removeTask={removeTask}
+                                            changeFilter={changeFilter}
+                                            addNewTask={addNewTask}
+                                            changeBoxStatus={changeBoxStatus}
+                                            removeTodolist={removeTodolist}
+                                        />
+                                    </Paper>
+                                </Grid>
+                            )
+                        })
+                    }
+                </Grid>
+            </Container>
         </div>
     );
 }
