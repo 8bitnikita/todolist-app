@@ -29,9 +29,9 @@ export function Todolist(props: PropsType) {
     }
 
     // Filter Buttons ('All' | 'Active' | 'Completed')
-    const onAllClickHandler = () => props.changeFilter("All", props.id)
-    const onActiveClickHandler = () => props.changeFilter("Active", props.id)
-    const onCompletedClickHandler = () => props.changeFilter("Completed", props.id)
+    const onAllClickHandler = () => props.changeFilter("all", props.id)
+    const onActiveClickHandler = () => props.changeFilter("active", props.id)
+    const onCompletedClickHandler = () => props.changeFilter("completed", props.id)
 
     // Button to remove Todolist
     const onRemoveTodolistHandler = () => props.removeTodolist(props.id)
@@ -61,17 +61,17 @@ export function Todolist(props: PropsType) {
                 }
             </div>
             <div>
-                <Button variant={props.filter === 'All' ? 'outlined' : 'text'}
+                <Button variant={props.filter === 'all' ? 'outlined' : 'text'}
                         color={"primary"}
                         // className={props.filter === 'All' ? 'active-filter' : ''}
                         onClick={onAllClickHandler}>All
                 </Button>
-                <Button variant={props.filter === 'Active' ? 'outlined' : 'text'}
+                <Button variant={props.filter === 'active' ? 'outlined' : 'text'}
                         color={"default"}
                         // className={props.filter === 'Active' ? 'active-filter' : ''}
                         onClick={onActiveClickHandler}>Active
                 </Button>
-                <Button variant={props.filter === 'Completed' ? 'outlined' : 'text'}
+                <Button variant={props.filter === 'completed' ? 'outlined' : 'text'}
                         color={"default"}
                         // className={props.filter === 'Completed' ? 'active-filter' : ''}
                         onClick={onCompletedClickHandler}>Completed

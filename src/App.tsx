@@ -6,8 +6,8 @@ import {AddInputForm} from "./AddInputForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 
-export type filterValuesType = 'All' | 'Active' | 'Completed'
-type TodolistType = {
+export type filterValuesType = 'all' | 'active' | 'completed'
+export type TodolistType = {
     id: string
     title: string
     filter: filterValuesType
@@ -19,6 +19,31 @@ type TasksStateType = {
 const App = () => {
     let todolistId1 = v1();
     let todolistId2 = v1();
+
+    let [todolists, setTodolists] = useState<Array<TodolistType>>([
+        {
+            id: todolistId1,
+            title: 'What to learn',
+            filter: 'all'
+        },
+        {
+            id: todolistId2,
+            title: 'What to buy',
+            filter: 'all'
+        }
+    ])
+    let [tasks, setTasks] = useState<TasksStateType>({
+        [todolistId1]: [
+            {id: v1(), title: 'HTML & CSS', isDone: true},
+            {id: v1(), title: 'JavaScript', isDone: true},
+            {id: v1(), title: 'React JS', isDone: false}
+        ],
+        [todolistId2]: [
+            {id: v1(), title: 'Milk', isDone: true},
+            {id: v1(), title: 'JS book', isDone: true},
+            {id: v1(), title: 'Macbook', isDone: false}
+        ]
+    })
 
     // useState to delete tasks
     const removeTask = (id: string, todolistId: string) => {
@@ -62,37 +87,10 @@ const App = () => {
         }
     }
 
-    // useState to add Todolists
-    let [todolists, setTodolists] = useState<Array<TodolistType>>([
-        {
-            id: todolistId1,
-            title: 'What to learn',
-            filter: 'All'
-        },
-        {
-            id: todolistId2,
-            title: 'What to buy',
-            filter: 'All'
-        }
-    ])
-
-    let [tasks, setTasks] = useState<TasksStateType>({
-        [todolistId1]: [
-            {id: v1(), title: 'HTML & CSS', isDone: true},
-            {id: v1(), title: 'JavaScript', isDone: true},
-            {id: v1(), title: 'React JS', isDone: false}
-        ],
-        [todolistId2]: [
-            {id: v1(), title: 'Milk', isDone: true},
-            {id: v1(), title: 'JS book', isDone: true},
-            {id: v1(), title: 'Macbook', isDone: false}
-        ]
-    })
-
     // Function to add new Todolist
     const addTodolist = (title: string) => {
         let newTodolistId = v1();
-        let newTodolist: TodolistType = {id: newTodolistId, title: title, filter: 'All'}
+        let newTodolist: TodolistType = {id: newTodolistId, title: title, filter: 'all'}
         setTodolists([newTodolist, ...todolists])
         setTasks({...tasks, [newTodolistId]: []})
     }
@@ -120,10 +118,10 @@ const App = () => {
                         todolists.map(tl => {
                             let allTodolistTasks = tasks[tl.id];
                             let tasksForTodolist = allTodolistTasks
-                            if (tl.filter === 'Active') {
+                            if (tl.filter === 'active') {
                                 tasksForTodolist = allTodolistTasks.filter(task => !task.isDone)
                             }
-                            if (tl.filter === 'Completed') {
+                            if (tl.filter === 'completed') {
                                 tasksForTodolist = allTodolistTasks.filter(task => task.isDone)
                             }
 
