@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useReducer} from 'react';
 import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from "uuid";
 import {AddInputForm} from "./AddInputForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
+import {AddTodolistAC, ChangeTodolistFilterAC, RemoveTodolistAC, todolistsReducer} from "./state/todolists-reducer";
+import {addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer} from "./state/tasks-reducer";
 
 export type filterValuesType = 'all' | 'active' | 'completed'
 export type TodolistType = {
@@ -16,11 +18,11 @@ export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 
-const App = () => {
+const AppWithReducers = () => {
     let todolistId1 = v1();
     let todolistId2 = v1();
 
-    let [todolists, setTodolists] = useState<Array<TodolistType>>([
+    let [todolists, dispatchToTodolist] = useReducer(todolistsReducer, [
         {
             id: todolistId1,
             title: 'What to learn',
@@ -32,7 +34,7 @@ const App = () => {
             filter: 'all'
         }
     ])
-    let [tasks, setTasks] = useState<TasksStateType>({
+    let [tasks, dispatchToTasks] = useReducer(tasksReducer, {
         [todolistId1]: [
             {id: v1(), title: 'HTML & CSS', isDone: true},
             {id: v1(), title: 'JavaScript', isDone: true},
@@ -47,51 +49,40 @@ const App = () => {
 
     // useState to delete tasks
     const removeTask = (id: string, todolistId: string) => {
-        let todolistTasks = tasks[todolistId]
-        tasks[todolistId] = todolistTasks.filter(task => task.id !== id)
-        setTasks({...tasks})
+        const action = removeTaskAC(id, todolistId);
+        dispatchToTasks(action);
     }
 
     // Function to remove Todolist
     const removeTodolist = (id: string) => {
-        setTodolists(todolists.filter(tl => tl.id !== id))
-        delete tasks[id]
-        setTasks({...tasks})
+        const action = RemoveTodolistAC(id);
+        dispatchToTodolist(action);
+        dispatchToTasks(action);
     }
 
     // Function to Add tasks
-    const addNewTask = (taskTitle: string, todolistId: string) => {
-        let task = {id: v1(), title: taskTitle.trim(), isDone: false};
-        let todolistTasks = tasks[todolistId]
-        tasks[todolistId] = [task, ...todolistTasks]
-        setTasks({...tasks})
+    const addNewTask = (title: string, todolistId: string) => {
+        const action = addTaskAC(title, todolistId);
+        dispatchToTasks(action);
     }
 
     // Change checkbox status (true/false)
     const changeBoxStatus = (id: string, isDone: boolean, todolistId: string) => {
-        let todolistTasks = tasks[todolistId]
-        let task = todolistTasks.find(t => t.id === id)
-        if (task) {
-            task.isDone = isDone
-            setTasks({...tasks})
-        }
+        const action = changeTaskStatusAC(id, isDone, todolistId);
+        dispatchToTasks(action);
     }
 
     // Function to filter buttons ('All' | 'Active' | 'Completed')
     const changeFilter = (value: filterValuesType, todolistId: string) => {
-        let todolist = todolists.find(tl => tl.id === todolistId)
-        if (todolist) {
-            todolist.filter = value
-            setTodolists([...todolists])
-        }
+        const action = ChangeTodolistFilterAC(value, todolistId);
+        dispatchToTodolist(action);
     }
 
     // Function to add new Todolist
     const addTodolist = (title: string) => {
-        let newTodolistId = v1();
-        let newTodolist: TodolistType = {id: newTodolistId, title: title, filter: 'all'}
-        setTodolists([newTodolist, ...todolists])
-        setTasks({...tasks, [newTodolistId]: []})
+        const action = AddTodolistAC(title);
+        dispatchToTodolist(action);
+        dispatchToTasks(action);
     }
 
     return (
@@ -150,4 +141,4 @@ const App = () => {
     );
 }
 
-export default App;
+export default AppWithReducers;
