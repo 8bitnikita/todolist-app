@@ -1,12 +1,14 @@
-import React, {useReducer} from 'react';
+import React from 'react';
 import './App.css';
 import {TaskType, Todolist} from './Todolist';
-import {v1} from "uuid";
 import {AddInputForm} from "./AddInputForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
-import {AddTodolistAC, ChangeTodolistFilterAC, RemoveTodolistAC, todolistsReducer} from "./state/todolists-reducer";
-import {addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer} from "./state/tasks-reducer";
+import {AddTodolistAC, ChangeTodolistFilterAC, RemoveTodolistAC} from "./state/todolists-reducer";
+import {addTaskAC, changeTaskStatusAC, removeTaskAC} from "./state/tasks-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./state/store";
+
 
 export type filterValuesType = 'all' | 'active' | 'completed'
 export type TodolistType = {
@@ -18,76 +20,50 @@ export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 
-const AppWithReducers = () => {
-    let todolistId1 = v1();
-    let todolistId2 = v1();
+const AppWithRedux = () => {
 
-    let [todolists, dispatchToTodolist] = useReducer(todolistsReducer, [
-        {
-            id: todolistId1,
-            title: 'What to learn',
-            filter: 'all'
-        },
-        {
-            id: todolistId2,
-            title: 'What to buy',
-            filter: 'all'
-        }
-    ])
-    let [tasks, dispatchToTasks] = useReducer(tasksReducer, {
-        [todolistId1]: [
-            {id: v1(), title: 'HTML & CSS', isDone: true},
-            {id: v1(), title: 'JavaScript', isDone: true},
-            {id: v1(), title: 'React JS', isDone: false}
-        ],
-        [todolistId2]: [
-            {id: v1(), title: 'Milk', isDone: true},
-            {id: v1(), title: 'JS book', isDone: true},
-            {id: v1(), title: 'Macbook', isDone: false}
-        ]
-    })
+    const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
+    const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+    const dispatch = useDispatch();
 
     // useState to delete tasks
     const removeTask = (id: string, todolistId: string) => {
         const action = removeTaskAC(id, todolistId);
-        dispatchToTasks(action);
+        dispatch(action);
     }
 
     // Function to remove Todolist
     const removeTodolist = (id: string) => {
         const action = RemoveTodolistAC(id);
-        dispatchToTodolist(action);
-        dispatchToTasks(action);
+        dispatch(action);
     }
 
     // Function to Add tasks
     const addNewTask = (title: string, todolistId: string) => {
         const action = addTaskAC(title, todolistId);
-        dispatchToTasks(action);
+        dispatch(action);
     }
 
     // Change checkbox status (true/false)
     const changeBoxStatus = (id: string, isDone: boolean, todolistId: string) => {
         const action = changeTaskStatusAC(id, isDone, todolistId);
-        dispatchToTasks(action);
+        dispatch(action);
     }
 
     // Function to filter buttons ('All' | 'Active' | 'Completed')
     const changeFilter = (value: filterValuesType, todolistId: string) => {
         const action = ChangeTodolistFilterAC(value, todolistId);
-        dispatchToTodolist(action);
+        dispatch(action);
     }
 
     // Function to add new Todolist
     const addTodolist = (title: string) => {
         const action = AddTodolistAC(title);
-        dispatchToTodolist(action);
-        dispatchToTasks(action);
+        dispatch(action);
     }
 
     return (
         <div className="App">
-
             <AppBar position="static">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
@@ -107,7 +83,7 @@ const AppWithReducers = () => {
                     {
                         todolists.map(tl => {
                             let allTodolistTasks = tasks[tl.id];
-                            let tasksForTodolist = allTodolistTasks
+                            let tasksForTodolist = allTodolistTasks;
                             if (tl.filter === 'active') {
                                 tasksForTodolist = allTodolistTasks.filter(task => !task.isDone)
                             }
@@ -141,4 +117,4 @@ const AppWithReducers = () => {
     );
 }
 
-export default AppWithReducers;
+export default AppWithRedux;
